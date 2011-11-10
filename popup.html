@@ -1,0 +1,279 @@
+<html>
+<head>
+	<title>11880 App</title>
+<style>
+body {
+  min-width:357px;
+  background-color:#000000;
+  overflow-x:hidden;
+}
+
+img {
+  margin:5px;
+  border:2px solid black;
+  vertical-align:middle;
+  width:75px;
+  height:75px;
+}
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script language="JavaScript" src="http://j.maxmind.com/app/geoip.js"></script>
+
+<script>
+var userCity = "";
+
+var mainMenu = [ 
+	"100;Orange;Fast Food;Fast Food;NULL;fastfood_hauptmenue.png",
+	"200;Orange;Restaurant;Restaurant;NULL;restaurant_hauptmenue.png",
+	"300;Orange;Hotel;Hotels;NULL;hotel_hauptmenue.png",
+	"400;Gelb;Taxi;Taxi;NULL;taxi_hauptmenue.png",
+	"500;Blau;Unterwegs;Unterwegs;NULL;unterwegs_hauptmenue.png",
+	"600;Blau;Automobil;Automobil;NULL;auto_hauptmenue.png",
+	"700;Lila;Body;Body;NULL;body_hauptmenue.png",
+	"800;Lila;Nachtleben;Nachtleben;NULL;nachtleben_hauptmenue.png",
+	"900;Rot;Gesundheit;Gesundheit;NULL;gesundheit_hauptmenue.png",
+	"1000;Gr√ºn;Shopping;Shop;NULL;shop_hauptmenue.png",
+	"1100;Gr√ºn;Geldautomat;Geldautomat;NULL;ec_hauptmenue.png",
+	"1200;AnderesGr√ºn;Personen;Personen;NULL;personensuche.png"
+];
+
+var subMenus = [ "100", "200", "300", "400", "500", "600", "700", "800", "900", "1000", "1100", "1200" ];
+subMenus["100"] = [ 
+	"102;Orange;Fast Food;Burger;Burger;fastfood_burger.png",
+	"103;Orange;Fast Food;Imbiss;y3AppImbiss;fastfood_imbiss.png",
+	"104;Orange;Fast Food;Pizzataxi;y3AppPizzaTaxi;fastfood_pizza.png",
+	"105;Orange;Fast Food;D√∂ner;y3AppD√∂ner;fastfood_doener.png",
+	"106;Orange;Fast Food;Asiatisch;y3AppFastFoodAsiatisch;fastfood_asiatisch.png",
+	"107;Orange;Fast Food;24 Stunden;Fast Food - 24h;fastfood_24.png",
+	"108;Orange;Fast Food;Sandwich;Sandwich;fastfood_baguette.png",
+	"109;Orange;Fast Food;Fisch;Fast Fisch;fastfood_fisch.png",
+	"110;Orange;Fast Food;Back-Shops;y3AppSBB√§ckereien;fastfood_backshop.png"
+];
+subMenus["200"] = [
+	"201;Orange;Restaurant;Restaurant;y3AppRestaurantsAlle;restaurant_alle.png",
+	"202;Orange;Restaurant;Deutsch;y3AppRestaurantsDeutsch;restaurant_deutsch.png",
+	"203;Orange;Restaurant;Italienisch;y3AppRestaurantsItalienisch;restaurant_italienisch.png",
+	"204;Orange;Restaurant;Griechisch;y3AppRestaurantsGriechisch;restaurant_griechisch.png",
+	"205;Orange;Restaurant;Chinesisch;y3AppRestaurantsChinesisch;restaurant_chinesisch.png",
+	"206;Orange;Restaurant;Steakhaus;y3AppRestaurantsSteakh√§user;restaurant_steak.png",
+	"207;Orange;Restaurant;T√ºrkisch;y3AppRestaurantsT√ºrkisch;restaurant_tuerkisch.png",
+	"208;Orange;Restaurant;Fisch;y3AppRestaurantsFischspezialit√§ten;restaurant_fisch.png",
+	"209;Orange;Restaurant;Sushi;y3AppRestaurantsSushi;restaurant_sushi.png",
+	"210;Orange;Restaurant;Mexikanisch;y3AppRestaurantsMexikanisch;restaurant_mexikanisch.png",
+	"211;Orange;Restaurant;Indisch;y3AppRestaurantsIndisch;restaurant_indisch.png",
+	"212;Orange;Restaurant;Franz√∂sisch;y3AppRestaurantsFranz√∂sisch;restaurant_franzoesisch.png",
+	"213;Orange;Restaurant;Caf√©s;y3AppCaf√©s;restaurant_cafe.png",
+	"214;Orange;Restaurant;Biergarten;y3AppBierg√§rten;restaurant_biergarten.png",
+	"215;Orange;Restaurant;Eiscaf√©;y3AppEisdielen;restaurant_eiscafe.png"
+];
+subMenus["300"] = [
+	"301;Orange;Hotel;Hotels;y3AppHotels;hotel_hotel.png",
+	"302;Orange;Hotel;Pension;y3AppPensionen;hotel_pension.png",
+	"303;Orange;Hotel;Jugendherb.;y3AppJugendherbergen;hotel_jugendherberge.png",
+	"304;Orange;Hotel;Ferienwhg;y3AppFerienwohnungen;hotel_ferienwohnung.png"
+];
+subMenus["400"] = [
+	"401;Gelb;Taxi;Taxi;y3AppTaxiunternehmen;taxi_taxi.png",
+	"402;Gelb;Taxi;Taxi 24;y3AppTaxizentralen;taxi_24h.png",
+	"403;Gelb;Taxi;Kurierdienst;y3AppKurierdienste;taxi_kurier.png",
+	"404;Gelb;Taxi;Krankentrans.;y3AppKrankentransporte;taxi_transport.png"
+];
+subMenus["500"] = [
+	"501;Blau;Unterwegs;Radar;Radar;unterwegs_radarfalle.png",
+	"502;Blau;Unterwegs;Stau;Staus;unterwegs_verkehr.png",
+	"503;Blau;Unterwegs;Tanken;Tanken;unterwegs_tanken.png",
+	"504;Blau;Unterwegs;Autogas;Tanken - Autogas;unterwegs_autogas.png",
+	"505;Blau;Unterwegs;Tanken 24;Tanken - 24h;unterwegs_tanken24.png",
+	"506;Blau;Unterwegs;Tanken AB;Tanken - Autobahn;unterwegs_tankenAB.png",
+	"507;Blau;Unterwegs;Tank+Shop;Tanken - mit Shop;unterwegs_tankshop.png",
+	"508;Blau;Unterwegs;Mietwagen;y3AppAutovermietung;unterwegs_autovermietung.png",
+	"509;Blau;Unterwegs;Pannendienst;y3AppRufPannendienst;unterwegs_pannendienst.png"
+];
+subMenus["600"] = [
+	"601;Blau;Automobil;Werkstatt;y3AppAutowerkst√§tten;auto_service.png",
+	"602;Blau;Automobil;VW;KFZService - VW;auto_vw.png",
+	"603;Blau;Automobil;Mercedes;KFZService - Mercedes;auto_mercedes.png",
+	"604;Blau;Automobil;BMW;KFZService - BMW;auto_bmw.png",
+	"605;Blau;Automobil;Opel;KFZService - Opel;auto_opel.png",
+	"606;Blau;Automobil;Audi;KFZService - Audi;auto_audi.png",
+	"607;Blau;Automobil;Reifen;y3AppAutoReifen;auto_reifen.png",
+	"608;Blau;Automobil;Autozubeh√∂r;y3AppAutoteile;auto_zubehoer.png",
+	"609;Blau;Automobil;ADAC & Co;y3AppAutomobilclubs;auto_clubs.png",
+	"610;Blau;Automobil;Fahrschule;y3AppAutoFahrschulen;auto_fahrschule.png",
+	"611;Blau;Automobil;Zulassung;y3AppKfzZulassungsstellenAmtliche;auto_zulassung.png",
+	"612;Blau;Automobil;Motorrad;y3AppMotorr√§der;auto_motorrad.png"
+];
+subMenus["700"] = [
+	"701;Lila;Body;Friseur;y3AppFriseure;body_friseur.png",
+	"702;Lila;Body;Schwimmen;y3AppBadeanstalten;body_schwimmen.png",
+	"703;Lila;Body;Fitness;y3AppFitness;body_fitness.png",
+	"704;Lila;Body;Sport;y3AppSportstudios;body_sport.png",
+	"705;Lila;Body;Solarium;y3AppSonnenstudios;body_solarium.png",
+	"706;Lila;Body;Nagelstudio;y3AppNagelstudios;body_nagelstudio.png",
+	"707;Lila;Body;Tattoo & Co;y3AppTattoostudios;body_tattoo.png",
+	"708;Lila;Body;Kosmetik;y3AppKosmetikstudios;body_kosmetik.png",
+	"709;Lila;Body;Sauna;y3AppSaunas;body_sauna.png",
+	"710;Lila;Body;Tennis;y3AppTennis;body_tennis.png",
+	"711;Lila;Body;Wellness;y3AppWellness;body_wellness.png"
+];
+subMenus["800"] = [
+	"801;Lila;Nachtleben;Bars;y3AppBars;nachtleben_bars.png",
+	"802;Lila;Nachtleben;Discothek;y3AppDiskotheken;nachtleben_discos.png",
+	"803;Lila;Nachtleben;Kino;y3AppKinos;nachtleben_kino.png",
+	"804;Lila;Nachtleben;Billard;y3AppBillardcenter;nachtleben_billard.png",
+	"805;Lila;Nachtleben;Bowling;y3AppBowlinganlagen;nachtleben_bowling.png",
+	"806;Lila;Nachtleben;Bistros;y3AppBistros;nachtleben_bistros.png",
+	"807;Lila;Nachtleben;Kneipe;y3AppKneipen;nachtleben_kneipen.png",
+	"808;Lila;Nachtleben;Kegeln;y3AppKegelbahnen;nachtleben_kegeln.png"
+];
+subMenus["900"] = [
+	"901;Rot;Gesundheit;Apotheke;y3AppApotheken;gesundheit_apotheke.png",
+	"902;Rot;Gesundheit;Notapotheke;Notapotheke;gesundheit_notapotheke.png",
+	"903;Rot;Gesundheit;Krankenhaus;y3AppKrankenh√§user;gesundheit_krankenhaus.png",
+	"904;Rot;Gesundheit;Allg.-Arzt;y3AppAllgemein√§rzte;gesundheit_allgemeinarzt.png",
+	"905;Rot;Gesundheit;Zahnarzt;y3AppZahn√§rzte;gesundheit_zahnarzt.png",
+	"906;Rot;Gesundheit;Orthop√§de;y3AppOrthop√§den;gesundheit_orthopaede.png",
+	"907;Rot;Gesundheit;Frauenarzt;y3AppFrauen√§rzte;gesundheit_frauenarzt.png",
+	"908;Rot;Gesundheit;Kinderarzt;y3AppKinder√§rzte;gesundheit_kinderarzt.png",
+	"909;Rot;Gesundheit;Hautarzt;y3AppDermatologen;gesundheit_hautarzt.png",
+	"910;Rot;Gesundheit;Augenarzt;y3AppAugen√§rzte;gesundheit_augenarzt.png",
+	"911;Rot;Gesundheit;HNO-Arzt;y3App√ÑrzteHNO;gesundheit_hno.png",
+	"912;Rot;Gesundheit;Massage;y3AppMassagepraxen;gesundheit_physio.png",
+	"913;Rot;Gesundheit;Optiker;y3AppOptiker;gesundheit_optiker.png",
+	"914;Rot;Gesundheit;Tierarzt;y3AppTier√§rzte;gesundheit_tier.png",
+	"915;Rot;Gesundheit;Krankenvers.;y3AppKrankenversicherungen;gesundheit_versicherung.png"
+];
+subMenus["1000"] = [
+	"1001;Gr√ºn;Shopping;Lebensmittel;y3AppLebensmittel;shop_lebensmittel.png",
+	"1002;Gr√ºn;Shopping;Bekleidung;y3AppBekleidung;shop_bekleidung.png",
+	"1003;Gr√ºn;Shopping;B√§cker;y3AppB√§ckereien;shop_baecker.png",
+	"1004;Gr√ºn;Shopping;Getr√§nke;y3AppGetr√§nke;shop_getraenke.png",
+	"1005;Gr√ºn;Shopping;Metzger;y3AppMetzgereien;shop_metzger.png",
+	"1006;Gr√ºn;Shopping;Baumarkt;y3AppBaum√§rkte;shop_baumarkt.png",
+	"1007;Gr√ºn;Shopping;Multimedia;y3AppMultimedia;shop_multimedia.png",
+	"1008;Gr√ºn;Shopping;Computer;y3AppComputerFachgesch√§fte;shop_computer.png",
+	"1009;Gr√ºn;Shopping;Schuhe;y3AppSchuhgesch√§fte;shop_schuhe.png",
+	"1010;Gr√ºn;Shopping;M√∂bel;y3AppM√∂bel;shop_moebel.png",
+	"1011;Gr√ºn;Shopping;Blumen;y3AppBlumen;shop_blumen.png"
+];
+subMenus["1100"] = [
+	"1101;Wei√ü;Geldautomat;Sparkasse;Geldautomaten - Sparkasse;ec_sparkasse.png",
+	"1102;Wei√ü;Geldautomat;Volksbank;Geldautomaten - VR-Bank;ec_volksbank.png",
+	"1103;Wei√ü;Geldautomat;Postbank;Geldautomaten - Postbank;ec_postbank.png",
+	"1104;Wei√ü;Geldautomat;Commerz;Geldautomaten - Commerzbank;ec_commerzbank.png",
+	"1105;Wei√ü;Geldautomat;Deutsche;Geldautomaten - Deutsche Bank;ec_deutschebank.png",
+	"1106;Wei√ü;Geldautomat;Sparda;Geldautomaten - Sparda Bank;ec_sparda.png",
+	"1107;Wei√ü;Geldautomat;ING-DiBa;Geldautomaten - ING-DiBa;ec_ingdiba.png",
+	"1108;Wei√ü;Geldautomat;Targobank;Geldautomaten - Targobank;ec_targo.png",
+	"1109;Wei√ü;Geldautomat;HypoVereins;Geldautomaten - HypoVereinsbank;ec_hypo.png",
+	"1110;Gr√ºn;Geldautomat;Alle;Geldautomaten;ec_alle.png",
+	"1111;Wei√ü;Geldautomat;Cashgroup;Cash Group;ec_cashgroup.png",
+	"1112;Wei√ü;Geldautomat;Cashpool;Cash Pool;ec_cashpool.png"
+];
+subMenus["1200"] = [
+	"1200;AnderesGr√ºn;Personen;Personen;NULL;personensuche.png;"
+];
+
+function createMenu(element, index, array) {
+	var menuItem = element.split(";");
+	
+	var id = menuItem[0];
+	var cat1 = menuItem[2];
+	var cat2 = menuItem[3];
+	var imagename = menuItem[5];
+	
+	var a = document.createElement("a");
+	a.href = "javascript:subMenus[\""+id+"\"].forEach(createSubMenu);";
+	var img = document.createElement("img");
+    img.src = "img/icons/" + imagename;
+	img.attributes["alt"] = cat2;
+    a.appendChild(img);
+    
+    myDiv = document.getElementById("divMainMenu");
+	myDiv.appendChild(a);
+	myDiv.style.display = 'block';
+
+    mySubDiv = document.getElementById("divSubMenu");
+	mySubDiv.style.display = 'none';
+
+}
+
+function createSubMenu(element, index, array) {
+	var menuItem = element.split(";");
+	
+	var id = menuItem[0];
+	var cat1 = menuItem[2];
+	var cat2 = menuItem[3];
+	var imagename = menuItem[5];
+	
+	var a = document.createElement("a");
+	a.href = "javascript:doSearch(\""+cat2+"\", \""+userCity+"\");";
+	var img = document.createElement("img");
+    img.src = "img/icons/" + imagename;
+	img.attributes["alt"] = cat2;
+    a.appendChild(img);
+	
+    mySubDiv = document.getElementById("divSubMenu");
+	mySubDiv.style.display = 'block';
+	mySubDiv.appendChild(a);
+
+    myDiv = document.getElementById("divMainMenu");
+	myDiv.style.display = 'none';
+
+}
+
+function doSearch(what, where) {
+	alert("doSearch::" + what + "/" + where );
+	var url = "http://www.11880.com/homepage/index/search?method=searchSimple&term=" + what + "&zipCity=" + where + "&radial=20%20km";
+	/*chrome.tabs.create({
+          'url':url,
+          'selected':true
+        });
+    */
+   window.open( url );
+}
+
+/*
+var req = new XMLHttpRequest();
+req.open(
+    "GET",
+    "http://api.flickr.com/services/rest/?" +
+        "method=flickr.photos.search&" +
+        "api_key=90485e931f687a9b9c2a66bf58a3861a&" +
+        "text=hello%20world&" +
+        "safe_search=1&" +  // 1 is "safe"
+        "content_type=1&" +  // 1 is "photos only"
+        "sort=relevance&" +  // another good one is "interestingness-desc"
+        "per_page=20",
+    true);
+req.onload = showPhotos;
+req.send(null);
+*/
+function showPhotos() {
+  var photos = req.responseXML.getElementsByTagName("photo");
+
+  for (var i = 0, photo; photo = photos[i]; i++) {
+    var img = document.createElement("image");
+    img.src = constructImageURL(photo);
+    document.body.appendChild(img);
+  }
+}
+
+function locateIP() {
+	var city = geoip_city();
+	//alert("Gotcha: "+ city);
+	return city;
+}
+
+function mainLoad() {
+	mainMenu.forEach(createMenu);
+	userCity = locateIP();
+}
+</script>
+</head>
+<body onload="mainLoad();">
+	<div id="divMainMenu"></div>
+	<div id="divSubMenu"></div>
+</body>
+
+</html>
