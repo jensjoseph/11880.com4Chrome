@@ -223,16 +223,13 @@ function createSubMenu(element, index, array) {
 }
 
 function doSearch(what, where) {
-	alert("doSearch::" + what + "/" + where );
-	var url = "http://www.11880.com/homepage/index/search?method=searchSimple&term=" + what + "&zipCity=" + where + "&radial=20%20km";
-	/*chrome.tabs.create({
-          'url':url,
-          'selected':true
-        });
-    */
-   window.open( url );
+	var target_url = "http://www.11880.com/homepage/index/search?method=searchSimple&_dvform_posted=1&term=" + what + "&zipCity=" + where + "&radial=20%20km";
+	chrome.tabs.create({
+          'url' : target_url,
+          'selected' : true
+      });
+    window.close();
 }
-
 /*
 var req = new XMLHttpRequest();
 req.open(
