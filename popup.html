@@ -8,6 +8,10 @@ body {
   overflow-x:hidden;
 }
 
+div {
+  background-color:#000000;
+}
+
 img {
   margin:5px;
   border:2px solid black;
@@ -15,12 +19,99 @@ img {
   width:75px;
   height:75px;
 }
+
+img.navi_icon {
+  vertical-align:middle;
+
+  margin:0px;
+  width:25px;
+  height:25px;
+}
+
+.head_navigation {
+  margin:5px;
+  background-color: black;
+  height:30px;
+}
+
+#head_title {
+  color: white;
+  font-weight: bold;
+  width:200px;
+}
+
+li {
+  list-style-type: none; 
+  color: white;
+  font-style: italic;
+  border-top: 2px white;
+}
+
+li a {
+	color: white;
+	font-style: italic;
+	margin: 5px;
+	
+}
+
+ul {
+	padding: 0px;
+	margin: 0px;
+	border-top: 2px;
+	border-color: white;
+	
+}
+
+#resultlist {
+  color: white;
+}
+ul {
+	color: white;
+}
+.resultitem_p {
+	background-image: url(img/11880-private.png);
+	background-color: black;
+	border-top: 2px solid white;
+	padding-left: 75px;
+	background-position: left;
+	background-repeat: no-repeat;
+}
+
+.resultitem_g {
+	background-image: url(img/11880-company.png);
+	background-color: black;
+	border-top: 2px solid white;
+	padding-left: 75px;
+	background-position: left;
+	background-repeat: no-repeat;
+}
+.portalitem {
+	background-image: url(img/11880-Icon.png);
+	background-color: black;
+	border-top: 2px solid white;
+	padding-left: 75px;
+	background-position: left;
+	background-repeat: no-repeat;
+}
+
+#powered {
+	background-color: black;
+	border-top: 2px solid white;
+	font-color: white;
+	font-style: italic;
+	width: 100%;
+}
+
+.entrylink {
+	padding-left: 50px;
+}
 </style>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 <script language="JavaScript" src="http://j.maxmind.com/app/geoip.js"></script>
 
 <script>
 var userCity = "";
+var glink = "";
 
 var mainMenu = [ 
 	"100;Orange;Fast Food;Fast Food;NULL;fastfood_hauptmenue.png",
@@ -33,8 +124,8 @@ var mainMenu = [
 	"800;Lila;Nachtleben;Nachtleben;NULL;nachtleben_hauptmenue.png",
 	"900;Rot;Gesundheit;Gesundheit;NULL;gesundheit_hauptmenue.png",
 	"1000;Gr√ºn;Shopping;Shop;NULL;shop_hauptmenue.png",
-	"1100;Gr√ºn;Geldautomat;Geldautomat;NULL;ec_hauptmenue.png",
-	"1200;AnderesGr√ºn;Personen;Personen;NULL;personensuche.png"
+	"1100;Gr√ºn;Geldautomat;Geldautomat;NULL;ec_hauptmenue.png"
+//	"1200;AnderesGr√ºn;Personen;Personen;NULL;personensuche.png"
 ];
 
 var subMenus = [ "100", "200", "300", "400", "500", "600", "700", "800", "900", "1000", "1100", "1200" ];
@@ -79,8 +170,8 @@ subMenus["400"] = [
 	"404;Gelb;Taxi;Krankentrans.;y3AppKrankentransporte;taxi_transport.png"
 ];
 subMenus["500"] = [
-	"501;Blau;Unterwegs;Radar;Radar;unterwegs_radarfalle.png",
-	"502;Blau;Unterwegs;Stau;Staus;unterwegs_verkehr.png",
+//	"501;Blau;Unterwegs;Radar;Radar;unterwegs_radarfalle.png",
+//	"502;Blau;Unterwegs;Stau;Staus;unterwegs_verkehr.png",
 	"503;Blau;Unterwegs;Tanken;Tanken;unterwegs_tanken.png",
 	"504;Blau;Unterwegs;Autogas;Tanken - Autogas;unterwegs_autogas.png",
 	"505;Blau;Unterwegs;Tanken 24;Tanken - 24h;unterwegs_tanken24.png",
@@ -189,12 +280,12 @@ function createMenu(element, index, array) {
 	img.attributes["alt"] = cat2;
     a.appendChild(img);
     
-    myDiv = document.getElementById("divMainMenu");
-	myDiv.appendChild(a);
-	myDiv.style.display = 'block';
+	$("#divMainMenu").append(a);
+	
+	$("#divMainMenu").show("slow");
+	$("#divSubMenu").hide("fast");
 
-    mySubDiv = document.getElementById("divSubMenu");
-	mySubDiv.style.display = 'none';
+	setTitle("Hauptmen&uuml;");
 
 }
 
@@ -212,40 +303,150 @@ function createSubMenu(element, index, array) {
     img.src = "img/icons/" + imagename;
 	img.attributes["alt"] = cat2;
     a.appendChild(img);
+
+	$("#divSubMenu").append(a);
 	
-    mySubDiv = document.getElementById("divSubMenu");
-	mySubDiv.style.display = 'block';
-	mySubDiv.appendChild(a);
+	$("#divSubMenu").show("slow");
+	$("#divMainMenu").hide("slow");
+	
+	setTitle(cat1);
+    //mySubDiv = document.getElementById("divSubMenu");
+	//mySubDiv.style.display = 'block';
+	//mySubDiv.appendChild(a);
 
-    myDiv = document.getElementById("divMainMenu");
-	myDiv.style.display = 'none';
+    //myDiv = document.getElementById("divMainMenu");
+	//myDiv.style.display = 'none';
 
+}
+
+function opentab(uri) {
+	try {
+		chrome.tabs.create({
+			'url' : uri,
+			'selected' : true
+		});
+		window.close();
+	} catch (e) {
+		window.open(uri, "portal");
+	}
+}
+
+  		
+function workonentries(response) {
+	setTitle(response.response.results[0].count + " Treffer");
+	$("#resultlist").html("");
+	var ul = $("<ul/>").attr("id", "resultlistul");
+	$("#resultlist").append(ul);
+	
+    $.each(response.response.results[0].entries, function(i,entry){
+    	var entrydisplay = "<b>" + entry.displayname + "</b><br/>";
+    	
+		var entryaddress = "";
+		if (entry.location.street) {
+			entryaddress = entryaddress + entry.location.street + " " + entry.location.streetnumber + ", ";
+		}    	
+		if (entry.location.zipcode) {
+			entryaddress = entryaddress + entry.location.zipcode + " ";
+		}
+		if (entry.location.city) {
+			entryaddress = entryaddress + entry.location.city;
+		}
+		entryaddress = entryaddress + "";
+		
+		var shortenPhone = entry.phonenumbers[0].displayphone.substring(0, entry.phonenumbers[0].displayphone.length-3) + "...";
+    	entrydisplay = entrydisplay + entryaddress + "<br/>" + shortenPhone;
+    	if (entry.phonenumbers[0].pricing) {
+	    	entrydisplay = entrydisplay + " (" + entry.phonenumbers[0].pricing + ")";		
+    	}   
+    	var plink = entry.backlink + "?WT.mc_id=34028000";
+    	//plink = plink.replace(/klicktel\.de/g, "11880.com");
+	    var a = $("<a/>").attr("class", "entrylink").attr( "href", "javascript:opentab(\""+ plink +"\");" ).html("Eintrag bei klicktel.de...");
+		var li = $("<li/>").html( entrydisplay ).attr( "id", entry.id).append(a);
+	    
+	    if ( entry.entrytype == "private" ) {
+			li.attr( "class", "resultitem_p" );
+		} else {
+			li.attr( "class", "resultitem_g" );
+		}
+	    $("#resultlistul").append(li);
+	});
 }
 
 function doSearch(what, where) {
-	var target_url = "http://www.11880.com/homepage/index/search?method=searchSimple&_dvform_posted=1&term=" + what + "&zipCity=" + where + "&radial=20%20km";
-	chrome.tabs.create({
-          'url' : target_url,
-          'selected' : true
-      });
-    window.close();
-}
+	setTitle("Suche: "+ what + " in " + where );
+
+	glink = "http://www.11880.com/homepage/index/search?WT.mc_id=34028000&method=searchSimple&_dvform_posted=1&what=" + what + "&where=" + where;
+
+    var url  = "http://openapi.klicktel.de/searchapi/meta";
+    var data = "key=28030da384027ca5367922a6c0f07d34&what=" + what + "&street=&cityname=" + where;
+
 /*
-var req = new XMLHttpRequest();
-req.open(
-    "GET",
-    "http://api.flickr.com/services/rest/?" +
-        "method=flickr.photos.search&" +
-        "api_key=90485e931f687a9b9c2a66bf58a3861a&" +
-        "text=hello%20world&" +
-        "safe_search=1&" +  // 1 is "safe"
-        "content_type=1&" +  // 1 is "photos only"
-        "sort=relevance&" +  // another good one is "interestingness-desc"
-        "per_page=20",
-    true);
-req.onload = showPhotos;
-req.send(null);
+	$.ajaxStart(function() {
+    	setTitle("Loading...");
+	});
+  	$.ajaxComplete(function() {
+    	setTitle("");
+	});
+*/	
+
+    var link = url + "?" + data;// + "?callback=?";
+
+	//var mock_data = '{"response":{"type":"list","results":[{"type":"entries","first":1,"last":8,"count":8,"total":8,"fused":false,"mergeSource":null,"entries":[{"id":"QMWIOQQMQ1BE2AB","type":"STANDARD","subtype":null,"mediaflag":0,"entrytype":"private","firstname":"Barbara","lastname":"Burger","salutation":"Frau","displayname":"Burger Barbara","location":{"streetnumber":"12","street":"Sutumerfeldstr.","zipcode":"45899","district":null,"city":"Gelsenkirchen","county":null,"state":null,"country":"DE"},"urls":null,"emails":[{"main":1,"email":""}],"media":{},"phonenumbers":[{"main":1,"description":"","type":"phone","countrycode":"49","area":"0209","number":"586561","displayphone":"(02 09) 58 65 61","pricing":null}]},{"id":"QVQJJWQMQ683943","type":"STANDARD","subtype":null,"mediaflag":0,"entrytype":"private","firstname":"Erwin","lastname":"Burger","salutation":"Herr","displayname":"Burger Erwin","location":{"streetnumber":"8","street":"Iburger Str.","zipcode":"45892","district":null,"city":"Gelsenkirchen","county":null,"state":null,"country":"DE"},"urls":null,"emails":[{"main":1,"email":""}],"media":{},"phonenumbers":[{"main":1,"description":"","type":"phone","countrycode":"49","area":"0209","number":"770391","displayphone":"(02 09) 77 03 91","pricing":null}]},{"id":"QVYQLWQMQ0ABFF6","type":"STANDARD","subtype":null,"mediaflag":0,"entrytype":"private","firstname":"Hans","lastname":"Burger","salutation":"Herr","displayname":"Burger Hans","location":{"streetnumber":"25 A","street":"Johannastr.","zipcode":"45899","district":null,"city":"Gelsenkirchen","county":null,"state":null,"country":"DE"},"urls":null,"emails":[{"main":1,"email":""}],"media":{},"phonenumbers":[{"main":1,"description":"","type":"phone","countrycode":"49","area":"0209","number":"52744","displayphone":"(02 09) 5 27 44","pricing":null}]},{"id":"QYYNGXRO73EB75","type":"STANDARD","subtype":null,"mediaflag":0,"entrytype":"business","lastname":"Burger King","displayname":"Burger King","location":{"streetnumber":"160","street":"Brauckstr.","zipcode":"45892","district":null,"city":"Gelsenkirchen","county":null,"state":null,"country":"DE"},"urls":[{"main":0,"display":"www.burgerking.de\/","link":"http:\/\/www.burgerking.de\/"}],"emails":[{"main":1,"email":""}],"media":{},"trades":[{"trade":"Fast Food - Burger King","id":"3301514"}],"phonenumbers":[{"main":0,"description":"","type":"fax","countrycode":"49","area":"0209","number":"1772811","displayphone":"(02 09) 1 77 28 11","pricing":null}]},{"id":"QVWRJXRODD38B3","type":"STANDARD","subtype":null,"mediaflag":0,"entrytype":"business","lastname":"Burger King","displayname":"Burger King","location":{"streetnumber":"10","street":"Grothusstr.","zipcode":"45881","district":null,"city":"Gelsenkirchen","county":null,"state":null,"country":"DE"},"urls":[{"main":0,"display":"www.burgerking.de\/","link":"http:\/\/www.burgerking.de\/"}],"emails":[{"main":1,"email":""}],"media":{},"trades":[{"trade":"Fast Food - Burger King","id":"3301514"}],"phonenumbers":[{"main":0,"description":"","type":"fax","countrycode":"49","area":"0209","number":"1554378","displayphone":"(02 09) 1 55 43 78","pricing":null}]},{"id":"QGSGVNMIC9EDCB","type":"STANDARD","subtype":null,"mediaflag":0,"entrytype":"business","lastname":"Burger King","displayname":"Burger King","location":{"streetnumber":"128","street":"Rotthauser Str.","zipcode":"45884","district":null,"city":"Gelsenkirchen","county":null,"state":null,"country":"DE"},"urls":null,"emails":[{"main":1,"email":""}],"media":{},"trades":[{"trade":"Fast Food - Burger King","id":"3301514"}],"phonenumbers":[{"main":1,"description":"","type":"phone","countrycode":"49","area":"0209","number":"3614870","displayphone":"(02 09) 3 61 48 70","pricing":null},{"main":0,"description":"","type":"fax","countrycode":"49","area":"0209","number":"3614871","displayphone":"(02 09) 3 61 48 71","pricing":null}]},{"id":"QMSGVNMI3C9EB1","type":"STANDARD","subtype":null,"mediaflag":0,"entrytype":"business","lastname":"Burger King","displayname":"Burger King","location":{"streetnumber":"54","street":"Willy-Brandt-Allee","zipcode":"45891","district":null,"city":"Gelsenkirchen","county":null,"state":null,"country":"DE"},"urls":[{"main":0,"display":"www.bkstores.de","link":"http:\/\/www.bkstores.de"}],"emails":[{"main":1,"email":""}],"media":{},"trades":[{"trade":"Fast Food - Burger King","id":"3301514"}],"phonenumbers":[{"main":1,"description":"","type":"phone","countrycode":"49","area":"0209","number":"1771391","displayphone":"(02 09) 1 77 13 91","pricing":null},{"main":0,"description":"","type":"fax","countrycode":"49","area":"0209","number":"1771392","displayphone":"(02 09) 1 77 13 92","pricing":null}]},{"id":"QVNGQWQMQED3DE6","type":"STANDARD","subtype":null,"mediaflag":0,"entrytype":"private","firstname":"Toni","lastname":"Burgert","salutation":"Herr","displayname":"Burgert Toni","location":{"streetnumber":"97","street":"Bismarckstr.","zipcode":"45881","district":null,"city":"Gelsenkirchen","county":null,"state":null,"country":"DE"},"urls":null,"emails":[{"main":1,"email":""}],"media":{},"phonenumbers":[{"main":1,"description":"","type":"phone","countrycode":"49","area":"0209","number":"83328","displayphone":"(02 09) 8 33 28","pricing":null}]}]},{"type":"locations","first":1,"last":1,"count":1,"total":1,"fused":false,"mergeSource":null,"locations":[{"streetnumber":"","street":"","zipcode":"458..","district":"","city":"Gelsenkirchen","county":"Gelsenkirchen, Stadt","state":"NW","country":"DE"}]}]}}';
+
+
+	$.getJSON(link,
+  		function(response) {
+		    workonentries(response);
+
+			if ( response.response.results[0].count == 20 ) {
+				var a = $("<a/>").attr("class", "portallink").attr( "href", "javascript:opentab(\""+ glink +"\");" ).html("<br/>Suche bei 11880.com...<br/>&nbsp;");
+				var li = $("<li/>").attr( "id", "portal").attr("class", "portalitem").append(a);
+		
+				$("#resultlistul").append(li);
+			}
+
+    	});
+
+
+//    var response = $.parseJSON(mock_data);
+//    setTitle(response.response.results[0].count + " Treffer")
+//    $.each(response.response.results[0].entries, function(i,entries){
+//	    var li = $("<li/>").html(entries.id);
+//	    $("#resultlist").append(li);
+//    });
+  
+/*
+ 
+    var response = $.get( link );
+*/  		
+  	
+    $("#divSubMenu").hide("slow");
+    $('#resultlist').show("slow");
+
+
+/*
+    $.ajax({
+  		url: url,
+  		type: "GET",
+  		data: data,
+  		dataType: 'json',
+  		success: function(response) {
+  			
+  			setTitle(response); 			
+  			$("#resultlistspan").html(response[0]);
+  
+      		$("#divSubMenu").hide("slow");
+    		$('#resultlist').show("slow");
+  		},
+  		fail: function() { 
+  			$('#resultlist').html('error');
+    		$("#divSubMenu").hide("slow");
+    		$('#resultlist').show("slow");
+  		}
+	});
 */
+}
+
 function showPhotos() {
   var photos = req.responseXML.getElementsByTagName("photo");
 
@@ -259,18 +460,50 @@ function showPhotos() {
 function locateIP() {
 	var city = geoip_city();
 	//alert("Gotcha: "+ city);
-	return city;
+	//return city;
+	return "Essen";
 }
 
 function mainLoad() {
 	mainMenu.forEach(createMenu);
 	userCity = locateIP();
 }
+
+function goBack() {
+	$("#divSubMenu").hide("slow");
+	$("#divMainMenu").show("slow");
+	
+	$("#divSubMenu").html("");
+	$("#resultlist").html("");
+	
+}
+
+function setTitle(sTitle) {
+	$("#head_title").html(sTitle);
+}
+
+$(document).ready(mainLoad());
+
+
+//       $("a").click(function(event){
+//         alert("As you can see, the link no longer took you to jquery.com");
+//         event.preventDefault();
+//       });
+
 </script>
 </head>
 <body onload="mainLoad();">
+	<div id="head_navigation" class="head_navigation">
+		<a href="javascript:goBack();" ><img class="navi_icon" src="img/arrow_left.gif" alt="back" /></a>
+		<span id="head_title"></span>
+		<a href="javascript:goSettings();"><img class="navi_icon" src="img/settings.png" alt="settings"/></a>
+	</div>
 	<div id="divMainMenu"></div>
 	<div id="divSubMenu"></div>
+	<div id="resultlist"><span id="resultlistspan"></span></div>
+	<div id="footer_navigation" class="footer_navigation">
+		<a href='javascript:opentab("http://www.telegate.media.de/");'><span id="powered">powered by telegate MEDIA</span></a>
+	</div>
 </body>
 
 </html>
