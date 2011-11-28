@@ -378,7 +378,8 @@ function doSearch(what, where) {
 	glink = "http://www.11880.com/homepage/index/search?WT.mc_id=34028000&method=searchSimple&_dvform_posted=1&what=" + what + "&where=" + where;
 
     var url  = "http://openapi.klicktel.de/searchapi/meta";
-    var data = "key=28030da384027ca5367922a6c0f07d34&what=" + what + "&street=&cityname=" + where;
+    var key = "2c8a16798e2d5a8ad07099f2d0abf6ba";
+    var data = "key=" + key + "&what=" + what + "&street=&cityname=" + where;
 
 /*
 	$.ajaxStart(function() {
